@@ -1,20 +1,20 @@
 /*
  * Released under BSD License
- * Copyright (c) 2014-2016 hizzgdev@163.com
+ * Copyright (c) 2014-2017 guimeisang
  * 
  * Project Home:
- *   https://github.com/hizzgdev/jsmind/
+ *   https://github.com/guimeisang/react-mind
  */
 
 (function($w){
     'use strict';       
-    // set 'jsMind' as the library name.
+    // set 'Mind' as the library name.
     // __name__ should be a const value, Never try to change it easily.
-    var __name__ = 'jsMind';
+    var __name__ = 'Mind';
     // library version
-    var __version__ = '0.4.3';
+    var __version__ = '0.1.0';
     // author
-    var __author__ = 'hizzgdev@163.com';
+    var __author__ = '792300489@qq.com';
 
     // an noop function define
     var _noop = function(){};
@@ -373,7 +373,7 @@
                 }
 
                 if(node.parent.isroot){
-                    if(direction == jsMind.direction.left){
+                    if(direction == Mind.direction.left){
                         node.direction = direction;
                     }else{
                         node.direction = jm.direction.right;
@@ -466,7 +466,7 @@
                     "version":__version__
                 },
                 "format":"node_tree",
-                "data":{"id":"root","topic":"jsMind Example"}
+                "data":{"id":"root","topic":"Mind Example"}
             },
             get_mind:function(source){
                 var df = jm.format.node_tree;
@@ -566,7 +566,7 @@
                 },
                 "format":"node_array",
                 "data":[
-                    {"id":"root","topic":"jsMind Example", "isroot":true}
+                    {"id":"root","topic":"Mind Example", "isroot":true}
                 ]
             },
 
@@ -2190,11 +2190,11 @@
             this.e_nodes = $c('jmnodes');
             this.e_editor = $c('input');
 
-            this.e_panel.className = 'jsmind-inner';
+            this.e_panel.className = 'mind-inner';
             this.e_panel.appendChild(this.e_canvas);
             this.e_panel.appendChild(this.e_nodes);
 
-            this.e_editor.className = 'jsmind-editor';
+            this.e_editor.className = 'mind-editor';
             this.e_editor.type = 'text';
 
             this.actualZoom = 1;
@@ -2911,4 +2911,9 @@
 
     // register global variables
     $w[__name__] = jm;
+
+    // export Mind
+    if(typeof module !== 'undefined' && module.exports){
+        module.exports = jm;
+    }
 })(window);

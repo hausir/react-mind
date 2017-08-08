@@ -1,24 +1,24 @@
 /*
  * Released under BSD License
- * Copyright (c) 2014-2015 hizzgdev@163.com
+ * Copyright (c) 2014-2017 guimeisang
  * 
  * Project Home:
- *   https://github.com/hizzgdev/jsmind/
+ *   https://github.com/guimeisang/react-mind
  */
 
 (function($w){
     'use strict';
     var $d = $w.document;
-    var __name__ = 'jsMind';
-    var jsMind = $w[__name__];
-    if(!jsMind){return;}
-    if(typeof(jsMind.shell)!='undefined'){return;}
+    var __name__ = 'Mind';
+    var Mind = $w[__name__];
+    if(!Mind){return;}
+    if(typeof(Mind.shell)!='undefined'){return;}
 
     var options = {
         play_delay : 1000
     };
 
-    jsMind.shell = function(jm){
+    Mind.shell = function(jm){
         this.jm = jm;
         this.step = 0;
         this.commands = []; //version
@@ -27,7 +27,7 @@
         this.jm_editable = this.jm.get_editable();
     };
 
-    jsMind.shell.prototype = {
+    Mind.shell.prototype = {
         init:function(){
             this.playing = false;
         },
@@ -92,10 +92,10 @@
         },
 
         jm_event_handle:function(type, data){
-            if(type === jsMind.event_type.show){
+            if(type === Mind.event_type.show){
                 this.record('show',data);
             }
-            if(type === jsMind.event_type.edit){
+            if(type === Mind.event_type.edit){
                 var action=data.evt;
                 delete data.evt;
                 this.record(action,data);
@@ -103,8 +103,8 @@
         }
     };
 
-    var shell_plugin = new jsMind.plugin('shell',function(jm){
-        var js = new jsMind.shell(jm);
+    var shell_plugin = new Mind.plugin('shell',function(jm){
+        var js = new Mind.shell(jm);
         jm.shell = js;
         js.init();
         jm.add_event_listener(function(type,data){
@@ -112,5 +112,5 @@
         });
     });
 
-    jsMind.register_plugin(shell_plugin);
+    Mind.register_plugin(shell_plugin);
 })(window);

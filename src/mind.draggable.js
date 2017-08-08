@@ -1,21 +1,21 @@
 /*
  * Released under BSD License
- * Copyright (c) 2014-2015 hizzgdev@163.com
+ * Copyright (c) 2014-2017 guimeisang
  * 
  * Project Home:
- *   https://github.com/hizzgdev/jsmind/
+ *   https://github.com/guimeisang/react-mind
  */
 
 (function($w){
     'use strict';
     var $d = $w.document;
-    var __name__ = 'jsMind';
-    var jsMind = $w[__name__];
-    if(!jsMind){return;}
-    if(typeof jsMind.draggable != 'undefined'){return;}
+    var __name__ = 'Mind';
+    var Mind = $w[__name__];
+    if(!Mind){return;}
+    if(typeof Mind.draggable != 'undefined'){return;}
 
-    var jdom = jsMind.util.dom;
-    var jcanvas = jsMind.util.canvas;
+    var jdom = Mind.util.dom;
+    var jcanvas = Mind.util.canvas;
 
     var clear_selection = 'getSelection' in $w ? function(){
          $w.getSelection().removeAllRanges();
@@ -29,7 +29,7 @@
         lookup_interval : 80
     };
 
-    jsMind.draggable = function(jm){
+    Mind.draggable = function(jm){
         this.jm = jm;
         this.e_canvas = null;
         this.canvas_ctx = null;
@@ -49,7 +49,7 @@
         this.moved = false;
     };
 
-    jsMind.draggable.prototype = {
+    Mind.draggable.prototype = {
         init:function(){
             this._create_canvas();
             this._create_shadow();
@@ -136,7 +136,7 @@
             var ns,nl;
 
             var direct = (sx + sw/2)>=root_x ?
-                            jsMind.direction.right : jsMind.direction.left;
+                            Mind.direction.right : Mind.direction.left;
             var nodes = this.jm.mind.nodes;
             var node = null;
             var min_distance = Number.MAX_VALUE;
@@ -153,7 +153,7 @@
                     }
                     ns = node.get_size();
                     nl = node.get_location();
-                    if(direct == jsMind.direction.right){
+                    if(direct == Mind.direction.right){
                         if(sx-nl.x-ns.w<=0){continue;}
                         distance = Math.abs(sx-nl.x-ns.w) + Math.abs(sy+sh/2-nl.y-ns.h/2);
                         np = {x:nl.x+ns.w-options.line_width,y:nl.y+ns.h/2};
@@ -302,7 +302,7 @@
 
         move_node:function(src_node,target_node,target_direct){
             var shadow_h = this.shadow.offsetTop;
-            if(!!target_node && !!src_node && !jsMind.node.inherited(src_node, target_node)){
+            if(!!target_node && !!src_node && !Mind.node.inherited(src_node, target_node)){
                 // lookup before_node
                 var sibling_nodes = target_node.children;
                 var sc = sibling_nodes.length;
@@ -330,20 +330,20 @@
         },
 
         jm_event_handle:function(type,data){
-            if(type === jsMind.event_type.resize){
+            if(type === Mind.event_type.resize){
                 this.resize();
             }
         }
     };
 
-    var draggable_plugin = new jsMind.plugin('draggable',function(jm){
-        var jd = new jsMind.draggable(jm);
+    var draggable_plugin = new Mind.plugin('draggable',function(jm){
+        var jd = new Mind.draggable(jm);
         jd.init();
         jm.add_event_listener(function(type,data){
             jd.jm_event_handle.call(jd,type,data);
         });
     });
 
-    jsMind.register_plugin(draggable_plugin);
+    Mind.register_plugin(draggable_plugin);
 
 })(window);

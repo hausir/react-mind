@@ -1,1 +1,2 @@
-module.exports = require('./src/Jsmind').default;
+import {Minder} from './src/mind';
+module.exports.Minder = Minder;
