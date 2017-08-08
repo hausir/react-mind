@@ -55,8 +55,7 @@ var mind = Mind.show(options,mind);
 React-mind is available as the `react-mind` package on [npm](https://www.npmjs.com/).
 
 ## Contributing
-https://github.com/hizzgdev/jsmind @hizzgdev
-
+this rope base on https://github.com/hizzgdev/jsmind @hizzgdev
 
 ### License
 
