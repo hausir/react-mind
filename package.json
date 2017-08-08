@@ -1,0 +1,27 @@
+{
+  "name": "react-mind",
+  "version": "1.0.0",
+  "description": "web for react mind",
+  "main": "index.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/guimeisang/react-mind.git"
+  },
+  "keywords": [
+    "mind",
+    "react",
+    "web"
+  ],
+  "author": "guimeisang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/guimeisang/react-mind/issues"
+  },
+  "homepage": "https://github.com/guimeisang/react-mind#readme"
+}
