@@ -8,8 +8,10 @@
 react-mind is a JavaScript library for building mind in react.
 
 * **what:** react-mind only for building mind for react user
-* **other:** the react-mind not finished
 
+## start
+
+`npm install react-mind`
 
 ## Examples
 
