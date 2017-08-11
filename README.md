@@ -18,7 +18,7 @@ react-mind is a JavaScript library for building mind in react.
 We have several examples [on the website](https://guimeisang.github.io/example/demo1.html). Here is the first one to get you started:
 
 ```js
-import {Mind} from 'react-mind';
+import { Minder } from 'react-mind';
 
 var mind = {
     "meta":{
