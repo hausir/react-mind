@@ -23,24 +23,50 @@ import { Minder } from 'react-mind';
 var mind = {
     "meta":{
         "name":"demo",
-        "author":"hizzgdev@163.com",
+        "author":"792300489@qq.com",
         "version":"0.2",
     },
-    "format":"node_array",
-    "data":[
-        {"id":"root", "isroot":true, "topic":"mind"},
-
-        {"id":"sub1", "parentid":"root", "topic":"sub1", "background-color":"#0000ff"},
-        {"id":"sub11", "parentid":"sub1", "topic":"sub11"},
-        {"id":"sub12", "parentid":"sub1", "topic":"sub12"},
-        {"id":"sub13", "parentid":"sub1", "topic":"sub13"},
-
-        {"id":"sub2", "parentid":"root", "topic":"sub2"},
-        {"id":"sub21", "parentid":"sub2", "topic":"sub21"},
-        {"id":"sub22", "parentid":"sub2", "topic":"sub22","foreground-color":"#33ff33"},
-
-        {"id":"sub3", "parentid":"root", "topic":"sub3"},
-    ]
+    "format":"node_tree",
+    "data":{"id":"root","topic":"mind","children":[
+            {"id":"easy","topic":"Easy","direction":"left","expanded":false,"children":[
+                {"id":"easy1","topic":"Easy to show"},
+                {"id":"easy2","topic":"Easy to edit"},
+                {"id":"easy3","topic":"Easy to store"},
+                {"id":"easy4","topic":"Easy to embed","children":[
+                    {"id":"easy41","topic":"Easy to show"},
+                    {"id":"easy42","topic":"Easy to edit"},
+                    {"id":"easy43","topic":"Easy to store"},
+                    {"id":"open44","topic":"BSD License","children":[
+                        {"id":"open441","topic":"on GitHub"},
+                        {"id":"open442","topic":"BSD License"}
+                    ]},
+                    {"id":"easy45","topic":"Easy to embed"}
+                ]}
+            ]},
+            {"id":"open","topic":"Open Source","direction":"right","children":[
+                {"id":"open1","topic":"on GitHub"},
+                {"id":"open2","topic":"BSD License","children":[
+                    {"id":"open21","topic":"on GitHub"},
+                    {"id":"open22","topic":"BSD License","children":[
+                        {"id":"open221","topic":"on GitHub"},
+                        {"id":"open222","topic":"BSD License"}
+                    ]}
+                ]}
+            ]},
+            {"id":"powerful","topic":"Powerful","direction":"right","expanded":false,"children":[
+                {"id":"powerful1","topic":"Base on Javascript"},
+                {"id":"powerful2","topic":"Base on HTML5"},
+                {"id":"powerful3","topic":"Depends on you","expanded":false,"children":[
+                    {"id":"powerful31","topic":"Base on Javascript"},
+                    {"id":"powerful32","topic":"Base on HTML5"},
+                    {"id":"powerful33","topic":"Depends on you"}
+                ]}
+            ]},
+            {"id":"other","topic":"test node","direction":"left","children":[
+                {"id":"other1","topic":"I'm from ajax"},
+                {"id":"other2","topic":"I can do everything"}
+            ]}
+        ]}
 };
 var options = {
     container:'mind_container',
@@ -49,6 +75,45 @@ var options = {
 }
 var mind = Mind.show(options,mind);
 ```
+
+## data
+
+* `format`
+> `node_tree`代表是树形的结构  `node_array` 代表数组的结构；
+
+* `expanded`:
+> 判断是否展开
+
+* `direction`:
+> 判断该节点是在左侧还是右侧；
+
+## options
+
+* `editable`
+> 是否可以编辑，true为可以，false为不可以；
+
+* `theme`
+> 皮肤
+
+## API
+- `mind.get_data()`
+> 获取数据
+
+- `mind.set_readonly()`
+> 设置为只读
+
+- `mind.add_node("sub2","sub23", "new node", {"background-color":"red"});`
+> 增加节点
+
+- `mind.set_node_color('sub21', 'green', '#ccc');`
+> 设置节点颜色
+
+## TODO
+
+- [ ] 实现组织结构图，实现鱼骨图等多种效果，用字段`structure`控制；
+- [ ] 添加在渲染前，渲染后，展开，收起等事件的回调函数；
+- [ ] 完善内部的事件系统；
+
 
 ## Installation
 
