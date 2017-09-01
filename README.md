@@ -1,9 +1,5 @@
 # react-mind
-
-[![TravisCI Build Status](https://travis-ci.org/mzabriskie/react-mind.svg?branch=master)](https://travis-ci.org/mzabriskie/react-mind)
-[![Appveyor Build Status](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true)](https://ci.appveyor.com/project/mzabriskie/react-mind)
 [![npm downloads](https://img.shields.io/npm/dt/react-mind.svg?maxAge=2592000)](http://npmjs.com/package/react-mind)
-[![gzip size](http://img.badgesize.io/https://npmcdn.com/react-mind/dist/react-mind.min.js?compression=gzip)]()
 
 react-mind is a JavaScript library for building mind in react.
 
@@ -15,7 +11,18 @@ react-mind is a JavaScript library for building mind in react.
 
 ## Examples
 
-We have several examples [on the website](https://guimeisang.github.io/react-mind/example/demo1.html). Here is the first one to get you started:
+We have several examples  Here is the first one to get you started:
+
+[on the website](https://guimeisang.github.io/react-mind/example/demo1.html)
+
+[on the website](https://guimeisang.github.io/react-mind/example/demo2.html)
+
+[on the website](https://guimeisang.github.io/react-mind/example/demo3.html)
+
+
+![普通思维导图](http://oi9n0t0p1.bkt.clouddn.com/mind_demo2.png)
+
+![组织结构图](http://oi9n0t0p1.bkt.clouddn.com/react-mind/downMind.png)
 
 ```js
 import { Minder } from 'react-mind';
@@ -110,9 +117,10 @@ var mind = Mind.show(options,mind);
 
 ## TODO
 
-- [ ] 实现组织结构图，实现鱼骨图等多种效果，用字段`structure`控制；
-- [ ] 添加在渲染前，渲染后，展开，收起等事件的回调函数；
-- [ ] 完善内部的事件系统；
+- [x] 实现组织结构图，实现鱼骨图等多种效果，用字段`type`控制 --> 已经实现组织结构图，鱼骨图还未实现；
+- [x] 添加在渲染前，渲染后，展开，收起等事件的回调函数；
+- [x] 完善内部的事件系统；
+- [ ] 有什么想法的可以联系 792300489@qq.com;
 
 
 ## Installation

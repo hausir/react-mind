@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>mind</title>
+    <link type="text/css" rel="stylesheet" href="../style/mind.css" />
+    <style type="text/css">
+        #mind_container{
+            width:1800px;
+            height:900px;
+            border:solid 1px #ccc;
+            background:#f4f4f4;
+        }
+    </style>
+</head>
+<body>
+<div id="mind_container"></div>
+<script type="text/javascript" src="../src/mind.js"></script>
+<script type="text/javascript" src="../src/mind.draggable.js"></script>
+<script type="text/javascript">
+    function load_mind(){
+        var mind = {
+            "meta":{
+                "name":"demo",
+                "author":"792300489@qq.com",
+                "version":"0.2",
+            },
+            "format":"node_tree",
+            "data":{"id":"root","topic":"根节点","children":[
+                    {"id":"easy","topic":"第一节点","expanded":false,"children":[
+                        {"id":"easy3","topic":"第二节点"},
+                        {"id":"easy4","topic":"第二节点","children":[
+                            {"id":"easy41","topic":"第三节点"},
+                            {"id":"easy42","topic":"第三节点"},
+                            {"id":"easy43","topic":"第三节点"},
+                            {"id":"open44","topic":"第三节点","children":[
+                                {"id":"open441","topic":"第四节点"},
+                                {"id":"open442","topic":"第四节点"}
+                            ]},
+                            {"id":"easy45","topic":"Easy to embed"}
+                        ]}
+                    ]},
+                    {"id":"open","topic":"第一节点","children":[
+                        {"id":"open1","topic":"第二节点"},
+                        {"id":"open2","topic":"第二节点","children":[
+                            {"id":"open21","topic":"第三节点"},
+                            {"id":"open22","topic":"第三节点","children":[
+                                {"id":"open221","topic":"第四节点"},
+                                {"id":"open222","topic":"第四节点"}
+                            ]}
+                        ]}
+                    ]}
+                ]}
+        };
+        var options = {
+            container: 'mind_container',
+            editable: true,
+            theme: 'primary',
+            type: 'organization',
+            layout: {
+                hspace:10,
+                vspace:70,
+                pspace:10
+            }
+        }
+        var mind = Mind.show(options,mind);
+    }
+
+    load_mind();
+</script>
+</body>
+</html>

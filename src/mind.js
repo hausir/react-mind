@@ -44,6 +44,7 @@
         theme : null,
         mode :'full',     // full or side
         support_html : true,
+        type: 'mind',
 
         view:{
             hmargin:100,
@@ -77,6 +78,15 @@
                 down       : 40, // Down
             }
         },
+        viewshow: function(){
+            // 完全渲染完的效果
+        },
+        expand: function(){
+            // 展开的效果
+        },
+        collapse: function(){
+            // 收起的效果
+        }
     };
 
     // core object
@@ -100,7 +110,7 @@
     };
 
     // ============= static object =============================================
-    jm.direction = {left:-1,center:0,right:1};
+    jm.direction = {left:-1,center:0,right:1,down:2}; // 为方向做一个
     jm.event_type = {show:1,resize:2,edit:3,select:4};
 
     jm.node = function(sId,iIndex,sTopic,oData,bIsRoot,oParent,eDirection,bExpanded){
@@ -227,6 +237,10 @@
                     d = (children_len > 1 && r > 0) ? jm.direction.left : jm.direction.right
                 }else{
                     d = (direction != jm.direction.left) ? jm.direction.right : jm.direction.left;
+                }
+                // 垂直模块添加的代码
+                if(direction && direction == jm.direction.down) {
+                    d = direction;
                 }
                 node = new jm.node(nodeid,nodeindex,topic,data,false,parent_node,d,expanded);
             }else{
@@ -457,6 +471,7 @@
         },
     };
 
+    // 数据的三种类型，node_tree,node_array,freemind
     jm.format = {
         node_tree:{
             example:{
@@ -949,12 +964,89 @@
             }
         },
 
+        // 将canvas画图方法封装一下
         canvas:{
             bezierto: function(ctx,x1,y1,x2,y2){
                 ctx.beginPath();
                 ctx.moveTo(x1,y1);
                 ctx.bezierCurveTo(x1+(x2-x1)*2/3,y1,x1,y2,x2,y2);
                 ctx.stroke();
+            },
+            rootDownBranch: function(ctx,x1,y1,x2,y2,lineWidth){
+                // 定义控制点
+                var dy = y2 - y1,
+                    dx = x2 - x1,
+                    cx, cy, radius, startAngle, endAngle, anticlockwise;
+                
+                    lineWidth *= 4
+
+                var _lineWidth = (x2 >= x1 ?  lineWidth : -1 * lineWidth)
+                
+                // 初始化四个中间点
+                var minddle = {
+                    change1: {
+                        start: {
+                            X: x1,
+                            Y: y1 + (dy / 2) - lineWidth
+                        },
+                        end: {
+                            X: x1 + _lineWidth,
+                            Y: y1 + (dy / 2)
+                        },
+                        control: {
+                            X: x1,
+                            Y: y1 + (dy / 2)
+                        }
+                    },
+                    change2: {
+                        start: {
+                            X: x2 - _lineWidth,
+                            Y: y1 + (dy / 2)
+                        },
+                        end: {
+                            X: x2,
+                            Y: y1 + (dy / 2) + lineWidth
+                        },
+                        control: {
+                            X: x2,
+                            Y: y1 + (dy / 2)
+                        }
+                    }
+                }
+                // 区别在左侧还是右侧,还是直接
+                ctx.beginPath();
+                if(x2 > x1){
+                    ctx.moveTo(x1 , y1);
+                    ctx.lineTo(minddle.change1.start.X , minddle.change1.start.Y);
+                    ctx.quadraticCurveTo(minddle.change1.control.X , minddle.change1.control.Y, minddle.change1.end.X , minddle.change1.end.Y);
+                    ctx.lineTo(minddle.change2.start.X, minddle.change2.start.Y);
+                    ctx.quadraticCurveTo(minddle.change2.control.X, minddle.change2.control.Y, minddle.change2.end.X, minddle.change2.end.Y);
+                }else if(x2 < x1){
+                    ctx.moveTo(x1 , y1);
+                    ctx.lineTo(minddle.change1.start.X , minddle.change1.start.Y);
+                    ctx.quadraticCurveTo(minddle.change1.control.X , minddle.change1.control.Y, minddle.change1.end.X , minddle.change1.end.Y);
+                    ctx.lineTo(minddle.change2.start.X, minddle.change2.start.Y);
+                    ctx.quadraticCurveTo(minddle.change2.control.X, minddle.change2.control.Y, minddle.change2.end.X, minddle.change2.end.Y);
+                }else if(x1 == x2){
+                    ctx.moveTo(x1,y1);
+                } 
+                ctx.lineTo(x2,y2);
+                ctx.stroke();
+            },
+            rootBranch: function(ctx,x1,y1,x2,y2,lineWidth){
+                // 修正偏差
+                var dx1 = (x2-x1)*1/3,
+                    dy1 = (y2-y1)*1/2,
+                    dx2= (x2-x1)*1/3,
+                    dy2 = (y2-y1)*1/4;
+
+                ctx.beginPath();
+                ctx.moveTo(x1, y1 - (4 * lineWidth));
+                ctx.lineTo(x1 , y1 + (4 * lineWidth));
+                ctx.bezierCurveTo(x1 + dx1, y1 + dy1, x2 - dx2, y2 - dy2, x2, y2);
+                ctx.bezierCurveTo(x2 - dx2, y2 - dy2, x1 + dx1, y1 + dy1, x1, y1 - (4 * lineWidth));
+                ctx.stroke();
+                ctx.fill();
             },
             lineto : function(ctx,x1,y1,x2,y2){
                 ctx.beginPath();
@@ -964,6 +1056,14 @@
             },
             clear:function(ctx,x,y,w,h){
                 ctx.clearRect(x,y,w,h);
+            },
+            brokenlineto: function(ctx, x1, y1, x2, y2) {
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x1, y1 + (y2 - y1) / 2);
+                ctx.lineTo(x2, y1 + (y2 - y1) / 2);
+                ctx.lineTo(x2, y2);
+                ctx.stroke();
             }
         },
 
@@ -1220,7 +1320,8 @@
             this.view.relayout();
             this.view.restore_location(node);
         },
-
+        
+        // 展开节点
         expand_node:function(node){
             if(!jm.util.is_node(node)){
                 var the_node = this.get_node(node);
@@ -1238,6 +1339,7 @@
             this.view.restore_location(node);
         },
 
+        // 收起节点
         collapse_node:function(node){
             if(!jm.util.is_node(node)){
                 var the_node = this.get_node(node);
@@ -1255,11 +1357,13 @@
             this.view.restore_location(node);
         },
 
+        // 收起所有节点
         expand_all:function(){
             this.layout.expand_all();
             this.view.relayout();
         },
 
+        // 展开所有节点
         collapse_all:function(){
             this.layout.collapse_all();
             this.view.relayout();
@@ -1294,7 +1398,9 @@
             logger.debug('layout.layout ok');
 
             this.view.show(true);
+            this.options.viewshow();
             logger.debug('view.show ok');
+            
 
             this.invoke_event_handle(jm.event_type.show,{data:[mind]});
         },
@@ -1327,7 +1433,13 @@
 
         add_node:function(parent_node, nodeid, topic, data){
             if(this.get_editable()){
-                var node = this.mind.add_node(parent_node, nodeid, topic, data);
+                var node;
+                if(this.options.type !== 'organization'){
+                    node = this.mind.add_node(parent_node, nodeid, topic, data, "", jm.direction.down);
+                }else{
+                    node = this.mind.add_node(parent_node, nodeid, topic, data);
+                }
+
                 if(!!node){
                     this.view.add_node(node);
                     this.layout.layout();
@@ -1822,25 +1934,141 @@
             var children = node.children;
             var i = children.length;
             var left_nodes = [];
-            var right_nodes = [];
+            var right_nodes = []; 
+            var down_nodes = []; // 用该来收藏向下的
             var subnode = null;
             while(i--){
                 subnode = children[i];
-                if(subnode._data.layout.direction == jm.direction.right){
-                    right_nodes.unshift(subnode);
+                if(this.jm.options.type === 'organization'){
+                    down_nodes.unshift(subnode);
                 }else{
-                    left_nodes.unshift(subnode);
+                    if(subnode._data.layout.direction == jm.direction.right){
+                        right_nodes.unshift(subnode);
+                    }else{
+                        left_nodes.unshift(subnode);
+                    }
                 }
             }
             layout_data.left_nodes = left_nodes;
             layout_data.right_nodes = right_nodes;
-            layout_data.outer_height_left = this._layout_offset_subnodes(left_nodes);
-            layout_data.outer_height_right = this._layout_offset_subnodes(right_nodes);
+            layout_data.down_nodes = down_nodes;
+            if(this.jm.options.type === 'organization'){
+                layout_data.outer_width_down = this.layoutDownNodes(down_nodes);
+            }else{
+                layout_data.outer_height_left = this._layout_offset_subnodes(left_nodes);
+                layout_data.outer_height_right = this._layout_offset_subnodes(right_nodes);
+            }
             this.bounds.e=node._data.view.width/2;
             this.bounds.w=0-this.bounds.e;
             //logger.debug(this.bounds.w);
             this.bounds.n=0;
             this.bounds.s = Math.max(layout_data.outer_height_left,layout_data.outer_height_right);
+        },
+        // 垂直类型效果，垂直效果关键的地方
+        layoutDownNodes:function(nodes){
+            var node = null,
+                layout_data = null,
+                nextNodeX = 0,
+                pd = null,
+                allWidth = this.getDownNodesWidth(nodes);
+            for(var i in nodes) {
+                node = nodes[i];
+                layout_data = node._data.layout;
+                pd = pd || node.parent._data;
+                
+                var subNodesWidth = this.layoutDownNodes(node.children);
+
+                layout_data.offset_y = this.opts.vspace;
+
+                //get children nodes width
+                if(node.parent.isroot) {
+                    var nodeBrotherWidth = this.getNodeBrotherWidth(nodes);
+                    layout_data.offset_x = i != 0 ? nextNodeX : pd.layout.offset_x - nodeBrotherWidth / 2;
+                }else{
+                    var nodeBrotherWidth = this.getNodeBrotherWidth(nodes);
+                    layout_data.offset_x = i != 0 ? nextNodeX : -(nodeBrotherWidth - pd.view.width) / 2;
+                }
+
+                nextNodeX = layout_data.offset_x + node._data.view.width + this.opts.hspace;
+
+                nextNodeX += this.getNodeRightWidth(node);
+
+                if( i < nodes.length - 1 ){
+                    var nextNode = nodes[++i];
+                    nextNodeX += this.getNodeLeftWidth(nextNode);
+                }
+            }  
+            return allWidth;  
+        },
+
+        // down mode node width
+        getDownNodesWidth: function(nodes){
+            var allWidth = 0;
+            for(var i in nodes ){
+                allWidth += Math.max(nodes[i]._data.view.width, this.getDownNodesWidth(nodes[i].children)) + this.opts.hspace;
+            }
+            return !!nodes.length ? allWidth - this.opts.hspace : 0;
+        },
+
+        // down mode brother width
+        getNodeBrotherWidth: function(nodes){
+            if (nodes.length == 1) {
+                return nodes[0]._data.view.width;
+            }
+
+            var nodeBrotherWidth = 0;
+            for(var i = 0; i < nodes.length; i++){
+                nodeBrotherWidth += nodes[i]._data.view.width;
+                nodeBrotherWidth += this.getNodeRightWidth(nodes[i]);
+                nodeBrotherWidth += this.opts.hspace;
+                if( i < nodes.length - 1 ){
+                    nodeBrotherWidth += this.getNodeLeftWidth(nodes[i + 1]);
+                }
+            }
+            nodeBrotherWidth -= this.opts.hspace;
+            if (nodes.length >= 2) {
+                nodeBrotherWidth -= this.getNodeRightWidth(nodes[nodes.length - 1]);
+            }    
+
+            return nodeBrotherWidth;
+        },
+
+        // down mode get node right width
+        getNodeRightWidth: function(node){
+            return this.getNodeOuterWidth(node, "right") - node._data.view.width / 2;
+        },
+
+        // down mode get node left width
+        getNodeLeftWidth: function(node){
+            return this.getNodeOuterWidth(node, "left") - node._data.view.width / 2;
+        },
+
+        // down mode get node outer width
+        getNodeOuterWidth: function(node, orientation, referenceWidth, baseWidth){
+            var children = node.children;
+            if(children.length == 0){
+                if (referenceWidth && referenceWidth > node._data.view.width / 2) {
+                    return referenceWidth;
+                }
+                return node._data.view.width / 2;
+            }
+
+            var referenceWidth = referenceWidth || node._data.view.width / 2;
+            var childrenWidth = this.getNodeBrotherWidth(children) / 2;
+            var baseWidth = baseWidth || 0;
+
+            baseWidth += childrenWidth;
+
+            if (baseWidth > referenceWidth) {
+                referenceWidth = baseWidth;
+            }
+
+            var index = orientation == "left" ? 0 : children.length - 1;
+            baseWidth -= (children[index]._data.view.width) / 2;
+
+            referenceWidth = this.getNodeOuterWidth(children[index], orientation, referenceWidth, baseWidth);
+
+            return referenceWidth;
         },
 
         // layout both the x and y axis
@@ -1967,6 +2195,9 @@
 
         get_node_point_in:function(node){
             var p = this.get_node_offset(node);
+            if(this.jm.options.type == 'organization'){
+                p.x += node._data.view.width / 2;
+            }
             return p;
         },
 
@@ -1986,7 +2217,12 @@
                 }else{
                     var view_data = node._data.view;
                     var offset_p = this.get_node_offset(node);
-                    pout_cache.x = offset_p.x + (view_data.width+this.opts.pspace)*node._data.layout.direction;
+                    if(this.jm.options.type == 'organization'){
+                        pout_cache.x = offset_p.x + view_data.width / 2;
+                    }else{
+                        pout_cache.x = offset_p.x + (view_data.width+this.opts.pspace)*node._data.layout.direction;
+                    }
+                    
                     pout_cache.y = offset_p.y;
                     //logger.debug('pout');
                     //logger.debug(pout_cache);
@@ -2039,12 +2275,14 @@
             node.expanded = true;
             this.part_layout(node);
             this.set_visible(node.children,true);
+            this.jm.options.expand();
         },
 
         collapse_node:function(node){
             node.expanded = false;
             this.part_layout(node);
             this.set_visible(node.children,false);
+            this.jm.options.collapse();
         },
 
         expand_all:function(){
@@ -2063,6 +2301,7 @@
                 this.part_layout(root);
                 this.set_visible(root.children,true);
             }
+            this.jm.options.expand();
         },
 
         collapse_all:function(){
@@ -2081,6 +2320,7 @@
                 this.part_layout(root);
                 this.set_visible(root.children,true);
             }
+            this.jm.options.collapse();
         },
 
         expand_to_depth:function(target_depth,curr_nodes,curr_depth){
@@ -2113,11 +2353,14 @@
                     root_layout_data.outer_height_right=this._layout_offset_subnodes_height(root_layout_data.right_nodes);
                     root_layout_data.outer_height_left=this._layout_offset_subnodes_height(root_layout_data.left_nodes);
                 }else{
-                    if(node._data.layout.direction == jm.direction.right){
-                        root_layout_data.outer_height_right=this._layout_offset_subnodes_height(root_layout_data.right_nodes);
-                    }else{
-                        root_layout_data.outer_height_left=this._layout_offset_subnodes_height(root_layout_data.left_nodes);
+                    if (this.jm.options.type !== 'organization') {
+                        if(node._data.layout.direction == jm.direction.right){
+                            root_layout_data.outer_height_right=this._layout_offset_subnodes_height(root_layout_data.right_nodes);
+                        }else{
+                            root_layout_data.outer_height_left=this._layout_offset_subnodes_height(root_layout_data.left_nodes);
+                        }
                     }
+                    
                 }
                 this.bounds.s = Math.max(root_layout_data.outer_height_left,root_layout_data.outer_height_right);
                 this.cache_valid = false;
@@ -2199,8 +2442,8 @@
 
             this.actualZoom = 1;
             this.zoomStep = 0.1;
-            this.minZoom = 0.5;
-            this.maxZoom = 2;
+            this.minZoom = 0;
+            this.maxZoom = 9999;
 
             var v = this;
             jm.util.dom.add_event(this.e_editor,'keydown',function(e){
@@ -2294,6 +2537,7 @@
             view_data.height = view_data.element.clientHeight;
         },
 
+        // 初始化nodes
         init_nodes:function(){
             var nodes = this.jm.mind.nodes;
             var doc_frag = $d.createDocumentFragment();
@@ -2311,6 +2555,7 @@
             this.init_nodes_size(node);
         },
 
+        // 创建node   
         create_node_element:function(node,parent_node){
             var view_data = null;
             if('view' in node._data){
@@ -2492,14 +2737,26 @@
                 return false;
             }
             this.actualZoom = zoom;
+            // 做一下判断
+            var _translateY = '0px';
+
+            if(zoom < 1){
+                var _minderWrap = document.getElementById( this.jm.options.container ),
+                _jmnodes = _minderWrap.getElementsByTagName('jmnodes')[0],
+                _width = _jmnodes.clientWidth,
+                _translateX = ( _width / 2 + this.jm.options.layout.hspace) * (zoom - 1) + 'px';
+            }
+
             for (var i=0; i < this.e_panel.children.length; i++) {
+                this.e_panel.children[i].style.transformOrigin = "left center"
                 this.e_panel.children[i].style.transform = 'scale(' + zoom + ')';
             };
+
             this.show(true);
             return true;
-
         },
 
+        // 在此处设置canvas和画布的大小 TODO
         _center_root:function(){
             // center root node
             var outer_w = this.e_panel.clientWidth;
@@ -2605,6 +2862,7 @@
             this._reset_node_custom_style(node._data.view.element, node.data);
         },
 
+        // 重设思维导图节点样式
         _reset_node_custom_style:function(node_element, node_data){
             if('background-color' in node_data){
                 node_element.style.backgroundColor = node_data['background-color'];
@@ -2664,11 +2922,13 @@
             node_element.style.color = "";
         },
 
+        // 清理线条
         clear_lines:function(canvas_ctx){
             var ctx = canvas_ctx || this.canvas_ctx;
             jm.util.canvas.clear(ctx,0,0,this.size.w,this.size.h);
         },
 
+        // 显示线条
         show_lines:function(canvas_ctx){
             this.clear_lines(canvas_ctx);
             var nodes = this.jm.mind.nodes;
@@ -2682,22 +2942,67 @@
                 if(('visible' in node._data.layout) && !node._data.layout.visible){continue;}
                 pin = this.layout.get_node_point_in(node);
                 pout = this.layout.get_node_point_out(node.parent);
-                this.draw_line(pout,pin,_offset,canvas_ctx);
+                // 判断是不是根部
+                if( !! node.parent.isroot ){
+                    this.draw_root_line(pout,pin,_offset,canvas_ctx);
+                }else{
+                    this.draw_line(pout,pin,_offset,canvas_ctx);
+                }
+                
             }
         },
-
-        draw_line:function(pin,pout,offset,canvas_ctx){
+        // 画根部的线条
+        draw_root_line:function(pin, pout, offset, canvas_ctx){
             var ctx = canvas_ctx || this.canvas_ctx;
-            ctx.strokeStyle = this.opts.line_color;
+            ctx.fillStyle = this.opts.line_color; // 线条的颜色
+            ctx.strokeStyle = this.opts.line_color; // 边框颜色
             ctx.lineWidth = this.opts.line_width;
             ctx.lineCap = 'round';
+
+            //  区别垂直方向的组织架构
+            if(this.jm.options.type == 'organization'){
+                ctx.lineWidth = 1.5 * this.opts.line_width;
+                jm.util.canvas.rootDownBranch(
+                    ctx,
+                    pin.x + offset.x,
+                    pin.y + offset.y,
+                    pout.x + offset.x,
+                    pout.y + offset.y,
+                    ctx.lineWidth
+                )
+            }else{
+                jm.util.canvas.rootBranch(
+                    ctx,
+                    pin.x + offset.x,
+                    pin.y + offset.y,
+                    pout.x + offset.x,
+                    pout.y + offset.y,
+                    ctx.lineWidth
+                )
+            }
+        },
+        // 画普通线
+        draw_line:function(pin,pout,offset,canvas_ctx){
+            var ctx = canvas_ctx || this.canvas_ctx;
+            ctx.strokeStyle = this.opts.line_color; // 线条的颜色
+            ctx.lineWidth = this.opts.line_width;
+            ctx.lineCap = 'round';
+            if (this.jm.options.type == 'organization') {
+                jm.util.canvas.brokenlineto(
+                    ctx,
+                    pin.x + offset.x,
+                    pin.y + offset.y,
+                    pout.x + offset.x,
+                    pout.y + offset.y);
+            }else{
+                jm.util.canvas.bezierto(
+                    ctx,
+                    pin.x + offset.x,
+                    pin.y + offset.y,
+                    pout.x + offset.x,
+                    pout.y + offset.y);
+            }
             
-            jm.util.canvas.bezierto(
-                ctx,
-                pin.x + offset.x,
-                pin.y + offset.y,
-                pout.x + offset.x,
-                pout.y + offset.y);
         },
     };
 

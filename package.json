@@ -1,6 +1,6 @@
 {
   "name": "react-mind",
-  "version": "0.1.2",
+  "version": "0.1.5",
   "description": "web for react mind",
   "main": "index.js",
   "directories": {
@@ -16,12 +16,18 @@
   "keywords": [
     "mind",
     "react",
-    "web"
+    "web",
+    "minder"
   ],
   "author": "guimeisang",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/guimeisang/react-mind/issues"
   },
-  "homepage": "https://github.com/guimeisang/react-mind#readme"
+  "homepage": "https://github.com/guimeisang/react-mind#readme",
+  "_from": "react-mind@0.1.3",
+  "_resolved": "http://registry.npm.taobao.org/react-mind/download/react-mind-0.1.3.tgz",
+  "dependencies": {
+    "react-mind": "^0.1.4"
+  }
 }

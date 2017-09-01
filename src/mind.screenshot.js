@@ -205,7 +205,7 @@
             }
             check_nodes_ready();
         },
-
+        // 刻画node
         _draw_node:function(node){
             var ctx = this.canvas_ctx;
             var view_data = node._data.view;
@@ -274,7 +274,7 @@
                 node.ready = true;
             }
         },
-
+        // 画收起的 + 
         _draw_expander:function(expander){
             var ctx = this.canvas_ctx;
             var ncs = getComputedStyle(expander);
