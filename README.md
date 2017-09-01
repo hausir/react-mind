@@ -1,7 +1,7 @@
 # react-mind
 [![npm downloads](https://img.shields.io/npm/dt/react-mind.svg?maxAge=2592000)](http://npmjs.com/package/react-mind)
 
-react-mind is a JavaScript library for building mind in react.
+react-mind is a JavaScript library for building mind, not only in react, also in angular, any web framwork
 
 * **what:** react-mind only for building mind for react user
 
