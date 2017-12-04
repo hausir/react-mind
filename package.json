@@ -1,5 +1,5 @@
 {
-  "name": "react-mind",
+  "name": "react-mind-fork",
   "version": "0.1.6",
   "description": "web for react mind",
   "main": "index.js",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/guimeisang/react-mind.git"
+    "url": "git+https://github.com/hausir/react-mind.git"
   },
   "keywords": [
     "mind",
@@ -22,12 +22,7 @@
   "author": "guimeisang",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/guimeisang/react-mind/issues"
+    "url": "https://github.com/hausir/react-mind/issues"
   },
-  "homepage": "https://github.com/guimeisang/react-mind#readme",
-  "_from": "react-mind@0.1.3",
-  "_resolved": "http://registry.npm.taobao.org/react-mind/download/react-mind-0.1.3.tgz",
-  "dependencies": {
-    "react-mind": "^0.1.4"
-  }
+  "homepage": "https://github.com/hausir/react-mind#readme"
 }

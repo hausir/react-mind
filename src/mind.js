@@ -2699,7 +2699,7 @@
         get_view_offset:function(){
             var bounds = this.layout.bounds;
             var _x = (this.size.w - bounds.e - bounds.w)/2;
-            var _y = this.size.h / 2;
+            var _y = 100;
             return{x:_x, y:_y};
         },
 
